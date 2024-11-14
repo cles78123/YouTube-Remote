@@ -29,8 +29,7 @@ onMounted(() => {
       <i class="fa-solid fa-circle-question" v-bind:title="localization.blockChannelKeywordNote"></i>
     </h1>
     <textarea class="title-input" v-model="blockList.blockChannelKeywordList.value" @blur="saveInputToStorage('blockChannelKeywordList', $event.target.value)" v-bind:placeholder="localization.textareaNote"></textarea>
-    <div class="help-text">
-      {{ localization.optionsNote }}
+    <div class="help-text" v-html="localization.optionsNote">
     </div>
   </div>
 </template>

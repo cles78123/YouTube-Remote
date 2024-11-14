@@ -27,7 +27,7 @@
     "message": "Block watched videos"
   },
   "optionsNote": {
-    "message": "GitHub: https://github.com/cles78123/YouTube-Remote.git\nE-Mail: cles78123@gmail.com\nIf you have any questions or would like to discuss anything, feel free to contact me."
+    "message": "GitHub:<a href=\"https://github.com/cles78123/YouTube-Remote.git\" target=\"_blank\">https://github.com/cles78123/YouTube-Remote.git</a><p>E-Mail:cles78123@gmail.com</p>If you have any questions or would like to discuss anything, feel free to contact me."
   },
   "textareaNote": {
     "message": "Example of input: \naaa\nbbb"

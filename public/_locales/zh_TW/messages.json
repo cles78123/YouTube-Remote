@@ -27,7 +27,7 @@
     "message": "屏蔽已看過的影片"
   },
   "optionsNote": {
-    "message": "GitHub:https://github.com/cles78123/YouTube-Remote.git\nE-Mail:cles78123@gmail.com\n有任何問題或討論都可以聯繫我"
+    "message": "GitHub:<a href=\"https://github.com/cles78123/YouTube-Remote.git\" target=\"_blank\">https://github.com/cles78123/YouTube-Remote.git</a><p>E-Mail:cles78123@gmail.com</p>有任何問題或討論都可以聯繫我"
   },
   "textareaNote": {
     "message": "在这里输入内容  範例\n雷軍\n雷總"
