@@ -1,0 +1,41 @@
+{
+  "extensionName": {
+    "message": "Youtube遥控器"
+  },
+  "extensionDesc": {
+    "message": "防止 YouTube 首頁變成亂七八糟的內容，封鎖各種不想看到的影片，通過封鎖讓 YouTube 繼續推送新的影片。"
+  },
+  "blockVideoKeyword": {
+    "message": "屏蔽影片名稱"
+  },
+  "blockVideoKeywordNote": {
+    "message": "透過關鍵字屏蔽 //EX:雷軍 則會封鎖所有名稱帶有雷軍的影片"
+  },
+  "blockViewCount": {
+    "message": "屏蔽觀看數低於設定量"
+  },
+  "blockViewCountNote": {
+    "message": "透過輸入最大值的數字屏蔽 //EX:1000 則會封鎖所有觀看量低於1000的影片(超過1萬時請以11000.12000等等為單位輸入)"
+  },
+  "blockChannelKeyword": {
+    "message": "屏蔽頻道"
+  },
+  "blockChannelKeywordNote": {
+    "message": "透過關鍵字屏蔽 //EX:雷軍 則會封鎖所有頻道名稱帶有雷軍的頻道"
+  },
+  "blockWatchedVideos": {
+    "message": "屏蔽已看過的影片"
+  },
+  "optionsNote": {
+    "message": ""
+  },
+  "textareaNote": {
+    "message": "在这里输入内容  範例\n雷軍\n雷總"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "confirm": {
+    "message": "確定"
+  }
+}
