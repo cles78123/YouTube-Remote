@@ -1,4 +1,4 @@
-import {showCustomPopup} from "../modal/main.ts";
+import {showCustomPopup} from "../pages/modal/main.ts";
 
 export class IndexVideoList {
     getVideos() {

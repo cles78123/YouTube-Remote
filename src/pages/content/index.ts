@@ -1,4 +1,4 @@
-import {IndexVideoList} from '../utils/IndexVideoList.ts';
+import {IndexVideoList} from '../../utils/IndexVideoList.ts';
 import {
     getCountBlockedVideos,
     getPopupSwitchAndBlockList,
