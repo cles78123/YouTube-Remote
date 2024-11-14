@@ -34,10 +34,6 @@ export class IndexVideoList {
     }
 
     processVideos(conditions) {
-        if (!conditions) {
-            return;
-        }
-
         const videos = this.getVideos();
         let number = videos.length;
 
@@ -46,12 +42,13 @@ export class IndexVideoList {
             const videoDetail = item.querySelectorAll('.yt-content-metadata-view-model-wiz__metadata-text');
 
             const videoTitle = videoTitleElement ? videoTitleElement.textContent.trim() : '无标题';
-            const viewCount = parseViewCount(videoDetail[1].textContent.trim());
-            const channelName = videoDetail[0].textContent;
 
             if (videoTitle === '无标题') {
                 return;
             }
+
+            const viewCount = parseViewCount(videoDetail[1].textContent.trim());
+            const channelName = videoDetail[0].textContent;
 
             const card = {
                 title: videoTitle,
