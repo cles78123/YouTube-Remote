@@ -74,12 +74,18 @@ export function saveWatchedVideo(tryNumber?: number) {
     if (title) {
         chrome.storage.local.get({blockWatchedVideosList: null}, function (items) {
             if (!items.blockWatchedVideosList) {
-                chrome.storage.local.set({blockWatchedVideosList: title});
+                chrome.storage.local.set({
+                    blockWatchedVideosList: title,
+                    countBlockedVideos: null
+                });
             } else {
                 const list = items.blockWatchedVideosList.split('\n').filter(k => k.trim() !== '');
 
                 if (!list.some(wvl => wvl == title)) {
-                    chrome.storage.local.set({blockWatchedVideosList: `${items.blockWatchedVideosList}\n${title}`});
+                    chrome.storage.local.set({
+                        blockWatchedVideosList: `${items.blockWatchedVideosList}\n${title}`,
+                        countBlockedVideos: null
+                    });
                 }
             }
         });
@@ -89,12 +95,18 @@ export function saveWatchedVideo(tryNumber?: number) {
 export function addBlockVideoKeywordList(title) {
     chrome.storage.local.get({blockVideoKeywordList: null}, function (items) {
         if (!items.blockVideoKeywordList) {
-            chrome.storage.local.set({blockVideoKeywordList: title});
+            chrome.storage.local.set({
+                blockVideoKeywordList: title,
+                countBlockedVideos: null
+            });
         } else {
             const list = items.blockVideoKeywordList.split('\n').filter(k => k.trim() !== '');
 
             if (!list.some(vkl => vkl == title)) {
-                chrome.storage.local.set({blockVideoKeywordList: `${items.blockVideoKeywordList}\n${title}`});
+                chrome.storage.local.set({
+                    blockVideoKeywordList: `${items.blockVideoKeywordList}\n${title}`,
+                    countBlockedVideos: null
+                });
             }
         }
     });
@@ -103,12 +115,18 @@ export function addBlockVideoKeywordList(title) {
 export function addBlockChannelKeywordList(title) {
     chrome.storage.local.get({blockChannelKeywordList: null}, function (items) {
         if (!items.blockChannelKeywordList) {
-            chrome.storage.local.set({blockChannelKeywordList: title});
+            chrome.storage.local.set({
+                blockChannelKeywordList: title,
+                countBlockedVideos: null
+            });
         } else {
             const list = items.blockChannelKeywordList.split('\n').filter(k => k.trim() !== '');
 
             if (!list.some(ckl => ckl == title)) {
-                chrome.storage.local.set({blockChannelKeywordList: `${items.blockChannelKeywordList}\n${title}`});
+                chrome.storage.local.set({
+                    blockChannelKeywordList: `${items.blockChannelKeywordList}\n${title}`,
+                    countBlockedVideos: null
+                });
             }
         }
     });
