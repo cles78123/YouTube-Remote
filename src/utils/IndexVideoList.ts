@@ -39,16 +39,17 @@ export class IndexVideoList {
 
         videos.forEach((item) => {
             const videoTitleElement = item.querySelector('h3 a');
-            const videoDetail = item.querySelectorAll('.yt-content-metadata-view-model-wiz__metadata-text');
-
+            const ariaLabel = videoTitleElement ? videoTitleElement.getAttribute('aria-label') : '';
             const videoTitle = videoTitleElement ? videoTitleElement.textContent.trim() : '无标题';
 
             if (videoTitle === '无标题') {
                 return;
             }
 
-            const viewCount = parseViewCount(videoDetail[1].textContent.trim());
-            const channelName = videoDetail[0].textContent;
+            const uploaderMatch = ariaLabel.match(/上傳者：(.+?) 觀看次數/);
+            const viewsMatch = ariaLabel.match(/觀看次數：([\d,]+次)/);
+            const channelName = uploaderMatch ? uploaderMatch[1] : '未知上传者';
+            const viewCount = viewsMatch ? viewsMatch[1].replace(/[,次]/g, '') : '0';
 
             const card = {
                 title: videoTitle,
@@ -64,7 +65,7 @@ export class IndexVideoList {
                 return;
             }
 
-            this.injectButton(videoDetail[2], videoTitle, channelName);
+            this.injectButton(videoTitleElement,videoTitle, channelName);
         });
 
         chrome.storage.local.set({'countBlockedVideos': number.toString()});
@@ -88,21 +89,4 @@ export class IndexVideoList {
             showCustomPopup(videoTitle, channelName);
         });
     }
-}
-
-function parseViewCount(viewCountText) {
-    viewCountText = viewCountText.replace('觀看次數：', '').replace('次', '');
-
-    const hasWan = viewCountText.includes('萬');
-    const hasYi = viewCountText.includes('億');
-
-    let count = parseFloat(viewCountText.replace('萬', '').replace('億', ''));
-
-    if (hasYi) {
-        count *= 100000000;
-    } else if (hasWan) {
-        count *= 10000;
-    }
-
-    return count;
 }
