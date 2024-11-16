@@ -39,17 +39,26 @@ export class IndexVideoList {
 
         videos.forEach((item) => {
             const videoTitleElement = item.querySelector('h3 a');
-            const ariaLabel = videoTitleElement ? videoTitleElement.getAttribute('aria-label') : '';
-            const videoTitle = videoTitleElement ? videoTitleElement.textContent.trim() : '无标题';
+            const ariaLabel = videoTitleElement ? videoTitleElement.getAttribute('aria-label') : null;
+            const videoTitle = videoTitleElement ? videoTitleElement.textContent.trim() : null;
+            let uploaderMatch;
+            let viewsMatch;
+            let channelName;
+            let viewCount;
 
-            if (videoTitle === '无标题') {
+            if (!videoTitle || !videoTitleElement) {
                 return;
             }
 
-            const uploaderMatch = ariaLabel.match(/上傳者：(.+?) 觀看次數/);
-            const viewsMatch = ariaLabel.match(/觀看次數：([\d,]+次)/);
-            const channelName = uploaderMatch ? uploaderMatch[1] : '未知上传者';
-            const viewCount = viewsMatch ? viewsMatch[1].replace(/[,次]/g, '') : '0';
+            if (ariaLabel) {
+                uploaderMatch = ariaLabel.match(/上傳者：(.+?) 觀看次數/);
+                viewsMatch = ariaLabel.match(/觀看次數：([\d,]+次)/);
+                channelName = uploaderMatch ? uploaderMatch[1] : '未知上传者';
+                viewCount = viewsMatch ? viewsMatch[1].replace(/[,次]/g, '') : '0';
+            } else {
+                channelName = null;
+                viewCount = 0;
+            }
 
             const card = {
                 title: videoTitle,
@@ -65,7 +74,7 @@ export class IndexVideoList {
                 return;
             }
 
-            this.injectButton(videoTitleElement,videoTitle, channelName);
+            this.injectButton(videoTitleElement, videoTitle, channelName);
         });
 
         chrome.storage.local.set({'countBlockedVideos': number.toString()});
