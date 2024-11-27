@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import {ref} from 'vue';
 import {initLocalization} from "../../composables/localization.js";
-import {addBlockChannelKeywordList, addBlockVideoKeywordList} from "../../modules/storage.ts";
+import {
+  addBlockChannelKeywordList,
+  addBlockChannelList,
+  addBlockVideoKeywordList,
+  addBlockVideoList
+} from "../../modules/storage.ts";
 
 const localization = initLocalization();
 
@@ -19,10 +24,10 @@ function confirmAction() {
   const blockChannelStatus = blockChannelCheckbox.value?.checked;
 
   if (blockVideoStatus) {
-    addBlockVideoKeywordList(props.videoTitle);
+    addBlockVideoList(props.videoTitle);
   }
   if (blockChannelStatus) {
-    addBlockChannelKeywordList(props.channelName);
+    addBlockChannelList(props.channelName);
   }
 
   if (popupContainer.value) {
@@ -48,7 +53,7 @@ function cancelAction() {
               <span class="slider round"></span>
             </label>
             <label class="switch-label">
-              {{ localization.blockVideoKeyword }}
+              {{ localization.blockVideo }}
             </label>
           </div>
           <div class="switch-item">
@@ -57,7 +62,7 @@ function cancelAction() {
               <span class="slider round"></span>
             </label>
             <label class="switch-label">
-              {{ localization.blockChannelKeyword }}
+              {{ localization.blockChannel }}
             </label>
           </div>
         </div>

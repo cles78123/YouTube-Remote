@@ -5,7 +5,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         const currentUrl = tab.url;
         if (isYouTubePage(currentUrl)) {
             setTimeout(function () {
-                chrome.tabs.sendMessage(tabId, {message: "activateBlock"});
+                chrome.tabs.sendMessage(tabId, {message: "activateBlock", timestamp: Date.now()});
             }, 1000);
         } else if (isYouTubeWatchPage(currentUrl)) {
             setTimeout(function () {

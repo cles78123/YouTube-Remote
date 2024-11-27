@@ -1,15 +1,21 @@
 import {ref} from "vue";
+import {functionSwitch, selectDefaultValue} from "../../../settings/settings.ts";
 
-export let switchStates = {
-    blockVideoKeyword: ref(false),
-    blockViewCount: ref(false),
-    blockChannelKeyword: ref(false),
-    blockWatchedVideos: ref(false)
-};
+export const switchStates = createReactiveRefs({
+    ...functionSwitch,
+    ...selectDefaultValue
+});
 
 export function initializeSwitchStates(items) {
-    switchStates.blockVideoKeyword.value = items.blockVideoKeyword;
-    switchStates.blockViewCount.value = items.blockViewCount;
-    switchStates.blockChannelKeyword.value = items.blockChannelKeyword;
-    switchStates.blockWatchedVideos.value = items.blockWatchedVideos;
+    for (const key in switchStates) {
+        switchStates[key].value = items[key];
+    }
+}
+
+function createReactiveRefs(initialValues) {
+    const reactiveRefs = {};
+    for (const key in initialValues) {
+        reactiveRefs[key] = ref(initialValues[key]);
+    }
+    return reactiveRefs;
 }

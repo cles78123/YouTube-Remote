@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             getCountBlockedVideos((items) => {
                 if (checkShouldBlock(videoList.getVideos().length, items.countBlockedVideos)) {
                     getPopupSwitchAndBlockList((storage) => {
-                        videoList.processVideos(loadVideoBlockConditions(videoList, storage));
+                        videoList.processVideos(loadVideoBlockConditions(videoList, storage), request.timestamp);
                     });
                 }
             });

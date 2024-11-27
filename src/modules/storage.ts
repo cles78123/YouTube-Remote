@@ -1,34 +1,24 @@
 // import { cloneDeep } from 'lodash-es'
 import {reloadYouTubePage} from "./tabAction.ts";
+import {functionSwitch, blockList, selectDefaultValue} from "../settings/settings.ts";
+import {i} from "vite/dist/node/types.d-aGj9QkWt";
 
 export function getPopupSwitch(callback) {
     fetchFromStorage({
-        blockVideoKeyword: false,
-        blockViewCount: false,
-        blockChannelKeyword: false,
-        blockWatchedVideos: false,
+        ...functionSwitch,
+        ...selectDefaultValue
     }, callback);
 }
 
 export function getBlockList(callback) {
-    fetchFromStorage({
-        blockVideoKeywordList: null,
-        blockViewCountList: null,
-        blockChannelKeywordList: null,
-        blockWatchedVideosList: null
-    }, callback);
+    fetchFromStorage(blockList, callback);
 }
 
 export function getPopupSwitchAndBlockList(callback) {
     fetchFromStorage({
-        blockVideoKeyword: false,
-        blockViewCount: false,
-        blockChannelKeyword: false,
-        blockWatchedVideos: false,
-        blockVideoKeywordList: null,
-        blockViewCountList: null,
-        blockChannelKeywordList: null,
-        blockWatchedVideosList: null,
+        ...functionSwitch,
+        ...selectDefaultValue,
+        ...blockList
     }, callback);
 }
 
@@ -49,6 +39,19 @@ export function saveSwitchChange(settingName) {
         reloadYouTubePage();
     }
 }
+
+export function saveSelectChange(settingName, functionSwitch) {
+    const selected = event.target.value;
+    chrome.storage.local.set({
+        [settingName]: selected,
+        countBlockedVideos: null
+    });
+
+    if (functionSwitch) {
+        reloadYouTubePage();
+    }
+}
+
 
 export function saveInputToStorage(name, inputString) {
     chrome.storage.local.set({
@@ -92,19 +95,77 @@ export function saveWatchedVideo(tryNumber?: number) {
     }
 }
 
-export function addBlockVideoKeywordList(title) {
-    chrome.storage.local.get({blockVideoKeywordList: null}, function (items) {
-        if (!items.blockVideoKeywordList) {
+export function saveAppearedVideos(cards, timestamp) {
+    chrome.storage.local.get({appearedVideos: null}, function (items) {
+        if (!items.appearedVideos) {
+            let videos = {};
+
+            cards.forEach(card => {
+                videos[card.title] = 1;
+            })
+
             chrome.storage.local.set({
-                blockVideoKeywordList: title,
+                appearedVideos: {
+                    timestamp: timestamp,
+                    expired: new Date(timestamp).setMonth(new Date(timestamp).getDate() + 7),
+                    videos: videos
+                }
+            });
+        } else if (items.appearedVideos.timestamp == timestamp) {
+            let videos = items.appearedVideos.videos;
+
+            cards.forEach(card => {
+                if (!videos[card.title]) {
+                    videos[card.title] = 1;
+                }
+            })
+
+            chrome.storage.local.set({
+                appearedVideos: {
+                    timestamp: items.appearedVideos.timestamp,
+                    expired: items.appearedVideos.expired,
+                    videos: videos
+                }
+            });
+        } else if (items.appearedVideos.timestamp != timestamp) {
+            let videos = items.appearedVideos.videos;
+
+            cards.forEach(card => {
+                if (!videos[card.title]) {
+                    videos[card.title] = 1;
+                } else {
+                    videos[card.title] = videos[card.title] + 1;
+                }
+            })
+
+            chrome.storage.local.set({
+                appearedVideos: {
+                    timestamp: timestamp,
+                    expired: items.appearedVideos.expired,
+                    videos: videos
+                }
+            });
+        }
+
+        if (timestamp > items.appearedVideos.expired) {
+            chrome.storage.local.remove('appearedVideos');
+        }
+    });
+}
+
+export function addBlockVideoList(title) {
+    chrome.storage.local.get({blockVideoList: null}, function (items) {
+        if (!items.blockVideoList) {
+            chrome.storage.local.set({
+                blockVideoList: title,
                 countBlockedVideos: null
             });
         } else {
-            const list = items.blockVideoKeywordList.split('\n').filter(k => k.trim() !== '');
+            const list = items.blockVideoList.split('\n').filter(k => k.trim() !== '');
 
             if (!list.some(vkl => vkl == title)) {
                 chrome.storage.local.set({
-                    blockVideoKeywordList: `${items.blockVideoKeywordList}\n${title}`,
+                    blockVideoList: `${items.blockVideoList}\n${title}`,
                     countBlockedVideos: null
                 });
             }
@@ -112,19 +173,19 @@ export function addBlockVideoKeywordList(title) {
     });
 }
 
-export function addBlockChannelKeywordList(title) {
-    chrome.storage.local.get({blockChannelKeywordList: null}, function (items) {
-        if (!items.blockChannelKeywordList) {
+export function addBlockChannelList(title) {
+    chrome.storage.local.get({blockChannelList: null}, function (items) {
+        if (!items.blockChannelList) {
             chrome.storage.local.set({
-                blockChannelKeywordList: title,
+                blockChannelList: title,
                 countBlockedVideos: null
             });
         } else {
-            const list = items.blockChannelKeywordList.split('\n').filter(k => k.trim() !== '');
+            const list = items.blockChannelList.split('\n').filter(k => k.trim() !== '');
 
             if (!list.some(ckl => ckl == title)) {
                 chrome.storage.local.set({
-                    blockChannelKeywordList: `${items.blockChannelKeywordList}\n${title}`,
+                    blockChannelList: `${items.blockChannelList}\n${title}`,
                     countBlockedVideos: null
                 });
             }
