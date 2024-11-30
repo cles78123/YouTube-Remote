@@ -1,6 +1,6 @@
 // import { cloneDeep } from 'lodash-es'
 import {reloadYouTubePage} from "./tabAction.ts";
-import {functionSwitch, blockList, selectDefaultValue} from "../settings/settings.ts";
+import {functionSwitch, blockList, selectDefaultValue, appearedVideosParameter} from "../settings/settings.ts";
 import {i} from "vite/dist/node/types.d-aGj9QkWt";
 
 export function getPopupSwitch(callback) {
@@ -96,7 +96,7 @@ export function saveWatchedVideo(tryNumber?: number) {
 }
 
 export function saveAppearedVideos(cards, timestamp) {
-    chrome.storage.local.get({appearedVideos: null}, function (items) {
+    chrome.storage.local.get(appearedVideosParameter, function (items) {
         if (!items.appearedVideos) {
             let videos = {};
 
@@ -105,50 +105,48 @@ export function saveAppearedVideos(cards, timestamp) {
             })
 
             chrome.storage.local.set({
-                appearedVideos: {
-                    timestamp: timestamp,
-                    expired: new Date(timestamp).setMonth(new Date(timestamp).getDate() + 7),
-                    videos: videos
-                }
+                appearedVideosTimestamp: timestamp,
+                appearedVideosExpired: new Date(timestamp).setMonth(new Date(timestamp).getDate() + 7),
+                appearedVideos: videos
             });
-        } else if (items.appearedVideos.timestamp == timestamp) {
-            let videos = items.appearedVideos.videos;
+        } else if (items.appearedVideosTimestamp == timestamp) {
+            let videos = items.appearedVideos;
+            let isProcessed = {};
 
             cards.forEach(card => {
                 if (!videos[card.title]) {
                     videos[card.title] = 1;
-                }
-            })
-
-            chrome.storage.local.set({
-                appearedVideos: {
-                    timestamp: items.appearedVideos.timestamp,
-                    expired: items.appearedVideos.expired,
-                    videos: videos
+                    isProcessed[card.title] = true;
+                } else if (!items.appearedIsProcessed[card.title]) {
+                    videos[card.title] += 1;
+                    isProcessed[card.title] = true;
                 }
             });
-        } else if (items.appearedVideos.timestamp != timestamp) {
-            let videos = items.appearedVideos.videos;
+
+            chrome.storage.local.set({
+                appearedVideos: videos,
+                appearedIsProcessed: isProcessed
+            });
+        } else if (items.appearedVideosTimestamp != timestamp) {
+            let videos = items.appearedVideos;
+            chrome.storage.local.remove('appearedIsProcessed');
 
             cards.forEach(card => {
                 if (!videos[card.title]) {
                     videos[card.title] = 1;
                 } else {
-                    videos[card.title] = videos[card.title] + 1;
+                    videos[card.title] += 1;
                 }
             })
 
             chrome.storage.local.set({
-                appearedVideos: {
-                    timestamp: timestamp,
-                    expired: items.appearedVideos.expired,
-                    videos: videos
-                }
+                appearedVideosTimestamp: timestamp,
+                appearedVideos: videos,
             });
         }
 
-        if (timestamp > items.appearedVideos.expired) {
-            chrome.storage.local.remove('appearedVideos');
+        if (items.appearedVideosTimestamp > items.appearedVideosExpired) {
+            chrome.storage.local.remove(['appearedVideosTimestamp', 'appearedVideosExpired', 'appearedVideos', 'appearedIsProcessed']);
         }
     });
 }

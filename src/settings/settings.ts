@@ -23,3 +23,10 @@ export const selectDefaultValue = {
     limitOccurrencesInChannelSelected: '1',
     triggerOnExceedCountSelected: '1',
 }
+
+export const appearedVideosParameter = {
+    appearedVideosTimestamp: null,
+    appearedVideosExpired: null,
+    appearedVideos: null,
+    appearedIsProcessed: {}
+}

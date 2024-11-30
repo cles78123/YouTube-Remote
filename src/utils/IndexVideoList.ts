@@ -64,7 +64,7 @@ export class IndexVideoList {
 
     triggerOnExceedCount(video, exceedCount, appearedVideos) {
         if (!video.title||!appearedVideos) return false;
-        const target = appearedVideos.videos[video.title];
+        const target = appearedVideos[video.title];
         return target && target > exceedCount;
     }
 
