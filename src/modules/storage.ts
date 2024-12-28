@@ -96,57 +96,61 @@ export function saveWatchedVideo(tryNumber?: number) {
 }
 
 export function saveAppearedVideos(cards, timestamp) {
-    chrome.storage.local.get(appearedVideosParameter, function (items) {
+    chrome.storage.local.get(appearedVideosParameter, function(items) {
+        let isProcessed = {};
+
         if (!items.appearedVideos) {
             let videos = {};
 
-            cards.forEach(card => {
+            cards.forEach((card) => {
                 videos[card.title] = 1;
-            })
-
+                isProcessed[card.title] = true;
+            });
             chrome.storage.local.set({
                 appearedVideosTimestamp: timestamp,
                 appearedVideosExpired: new Date(timestamp).setMonth(new Date(timestamp).getDate() + 7),
-                appearedVideos: videos
+                appearedVideos: videos,
+                appearedIsProcessed: isProcessed
             });
         } else if (items.appearedVideosTimestamp == timestamp) {
             let videos = items.appearedVideos;
-            let isProcessed = {};
 
-            cards.forEach(card => {
+            cards.forEach((card) => {
                 if (!videos[card.title]) {
                     videos[card.title] = 1;
-                    isProcessed[card.title] = true;
                 } else if (!items.appearedIsProcessed[card.title]) {
                     videos[card.title] += 1;
-                    isProcessed[card.title] = true;
                 }
-            });
 
+                isProcessed[card.title] = true;
+            });
             chrome.storage.local.set({
                 appearedVideos: videos,
                 appearedIsProcessed: isProcessed
             });
         } else if (items.appearedVideosTimestamp != timestamp) {
             let videos = items.appearedVideos;
-            chrome.storage.local.remove('appearedIsProcessed');
+            isProcessed = {};
 
-            cards.forEach(card => {
+            chrome.storage.local.remove("appearedIsProcessed");
+
+            cards.forEach((card) => {
                 if (!videos[card.title]) {
                     videos[card.title] = 1;
                 } else {
                     videos[card.title] += 1;
                 }
-            })
 
+                isProcessed[card.title] = true;
+            });
             chrome.storage.local.set({
                 appearedVideosTimestamp: timestamp,
                 appearedVideos: videos,
+                appearedIsProcessed: isProcessed
             });
         }
-
         if (items.appearedVideosTimestamp > items.appearedVideosExpired) {
-            chrome.storage.local.remove(['appearedVideosTimestamp', 'appearedVideosExpired', 'appearedVideos', 'appearedIsProcessed']);
+            chrome.storage.local.remove(["appearedVideosTimestamp", "appearedVideosExpired", "appearedVideos", "appearedIsProcessed"]);
         }
     });
 }
